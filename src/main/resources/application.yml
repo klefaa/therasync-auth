@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: therasync-auth
+  datasource:
+    url: jdbc:postgresql://localhost:5432/therasync_auth
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          yandex:
+            client-id: 0eaeb1f271ad4871b6195f0dfd96a5ac
+            client-secret: 964a240f264144a39c8b3b47b78fa2cb
+            scope: login:email
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/yandex"
+        provider:
+          yandex:
+            authorization-uri: https://oauth.yandex.ru/authorize
+            token-uri: https://oauth.yandex.ru/token
+            user-info-uri: https://login.yandex.ru/info
+            user-name-attribute: default_email
+server:
+  port: 8080
