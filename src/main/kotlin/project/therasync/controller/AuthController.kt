@@ -1,13 +1,14 @@
 package project.therasync.controller
 
-import project.therasync.data.repository.UserRepository
-import project.therasync.service.JwtService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import project.therasync.data.model.Role
+import project.therasync.data.repository.UserRepository
+import project.therasync.service.JwtService
 
 @RestController
 @RequestMapping("/auth")
@@ -24,12 +25,13 @@ class AuthController(
     }
 
     @GetMapping("/success")
-    fun successPage(authentication: Authentication): ResponseEntity<Map<String, String>> {
-        return ResponseEntity.ok(mapOf("message" to "Успешная авторизация", "user" to authentication.name))
-    }
+    fun successPage(authentication: Authentication): ResponseEntity<Map<String, String>> =
+        ResponseEntity.ok(mapOf("message" to "Успешная авторизация", "user" to authentication.name))
 
     @GetMapping("/validate")
-    fun validateToken(@RequestParam token: String): ResponseEntity<AuthInfoResponse> {
+    fun validateToken(
+        @RequestParam token: String,
+    ): ResponseEntity<AuthInfoResponse> {
         val claims = jwtService.validateToken(token) ?: return ResponseEntity.status(401).build()
         val email = claims.subject
         val user = userRepository.findByEmail(email) ?: return ResponseEntity.status(404).build()
@@ -39,5 +41,5 @@ class AuthController(
 
 data class AuthInfoResponse(
     val clientId: String,
-    val role: String,
+    val role: Role?,
 )
